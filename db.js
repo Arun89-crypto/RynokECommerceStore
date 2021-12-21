@@ -1,6 +1,6 @@
 // importing mongoose
 const mongoose = require('mongoose');
-const mongoURI = 'mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
+const mongoURI = 'mongodb://localhost:27017/rynokECommerce?readPreference=primary&appname=MongoDB%20Compass&ssl=false';
 
 // creating the function to connect to DB
 const connectToMongo = () => {
