@@ -1,4 +1,4 @@
-# RynokECommerceStore
+# RynokECommerceStore 🛒
 
 ## This application will have 2 seperate interfaces.
 
