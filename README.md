@@ -7,9 +7,9 @@
 
 ### Users can do following things on this application:
 
-- Login/Register for visiting application
-- Browse through different products
-- Filter products based on category, price etc..
+- Login/Register for visiting application ✅
+- Browse through different products ✅
+- Filter products based on category, price etc.. ✅
 - Like/review products
 - Add them to cart/wishlist
 - Edit/Delete his/her account

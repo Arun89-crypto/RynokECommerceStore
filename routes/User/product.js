@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../../models/Product');
+const User = require('../../models/User');
 const { body, validationResult } = require('express-validator');
 const fetchUser = require('../../middleware/fetchuser');
 
@@ -41,9 +42,9 @@ router.get('/fetchbycategory', [
 
 })
 
-// ROUTE 3 : LIKING A PRODUCT | Requires Auth | Requires Product ID | Requires auth-token in header
+// ROUTE 3 : LIKING A PRODUCT | Requires Auth | Requires Product ID & User ID | Requires auth-token in header
 
-router.put('/likeproduct/:id', fetchUser, async (req, res) => {
+router.put('/likeproduct/:id&:userid', fetchUser, async (req, res) => {
     try {
         let product = await Product.findById(req.params.id);
 
@@ -55,8 +56,23 @@ router.put('/likeproduct/:id', fetchUser, async (req, res) => {
             likes: product.likes + 1
         }
 
+        const likedProduct = {
+            productId: product._id,
+            name: product.name,
+            price: product.price,
+            quantity: product.quantity,
+            image: product.image
+        }
+
+        // Adding the liked product to the user db
+        let user = await User.findById(req.params.userid);
+        await user.liked.push(likedProduct);
+        user.save();
+
+        // updating the likes in product in db
         product = await Product.findByIdAndUpdate(req.params.id, { $set: newProduct }, { new: true });
         res.json(product);
+
     } catch (error) {
         res.status(500).send("Internal server error");
         console.log(error.message);
@@ -85,7 +101,36 @@ router.put('/dislikeproduct/:id', fetchUser, async (req, res) => {
     }
 })
 
+// ROUTE 5 : ADDING PRODUCT TO WISHLIST | Requires Auth | Requires Product ID & User ID | Requires auth-token in header
 
+router.put('/addtowishlist/:id&:userid', fetchUser, async (req, res) => {
+    try {
+        let product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(400).send('Product does not exist or id is wrong');
+        }
+
+        const wishlistProduct = {
+            productId: product._id,
+            name: product.name,
+            price: product.price,
+            quantity: product.quantity,
+            image: product.image
+        }
+
+        // Adding the liked product to the user db
+        let user = await User.findById(req.params.userid);
+        await user.wishlist.push(wishlistProduct);
+        user.save();
+
+        res.json(user);
+
+    } catch (error) {
+        res.status(500).send("Internal server error");
+        console.log(error.message);
+    }
+})
 
 // Temp route to add products | Remove after creating the Admin
 
