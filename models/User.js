@@ -19,6 +19,29 @@ const Wishlist = new mongoose.Schema({
     },
 });
 
+const LikedProducts = new mongoose.Schema({
+    productId: {
+        type: String,
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    },
+    image: {
+        type: String,
+        required: true
+    },
+})
+
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -41,7 +64,8 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    wishlist: [Wishlist]
+    wishlist: [Wishlist],
+    liked: [LikedProducts]
 })
 
 const User = mongoose.model('user', UserSchema);

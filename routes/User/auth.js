@@ -8,7 +8,7 @@ const fetchUser = require('../../middleware/fetchuser');
 
 const JWT_SECRET = "teetarkeaageteetar"
 
-// Creating the user /api/auth/register | Doesn't require Auth
+// ROUTE 1 : Creating the user /api/auth/register | Doesn't require Auth
 
 router.post('/register', [
     body('name', 'Name length must be greater than 2').isLength({ min: 2 }),
@@ -33,7 +33,7 @@ router.post('/register', [
         const salt = await bcrypt.genSalt(10);
         let secPassword = await bcrypt.hash(req.body.password, salt);
 
-        // 
+        // CREATING A USER IN DB
         user = await User.create({
             name: req.body.name,
             password: secPassword,
@@ -57,7 +57,7 @@ router.post('/register', [
     }
 })
 
-// Loging In user /api/auth/login | Doesn't require Auth
+// ROUTE 2 :  Loging In user /api/auth/login | Doesn't require Auth
 
 router.post('/login', [
     body('email', 'Enter a valid email').isEmail(),
@@ -100,7 +100,7 @@ router.post('/login', [
 
 })
 
-// get logged in user details /api/auth/getuser | Login required
+// ROUTE 3 : get logged in user details /api/auth/getuser | Login required
 router.post('/getuser', fetchUser, async (req, res) => {
     try {
         let userID = req.user.id;

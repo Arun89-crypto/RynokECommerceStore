@@ -14,6 +14,16 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    likes: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    dislikes: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     price: {
         type: Number,
         required: true
@@ -36,5 +46,5 @@ const ProductSchema = new mongoose.Schema({
     }
 })
 
-const Product = mongoose.model('product', ProductSchema);
+const Product = mongoose.model('products', ProductSchema);
 module.exports = Product;
