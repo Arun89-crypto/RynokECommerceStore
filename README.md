@@ -10,9 +10,9 @@
 - Login/Register for visiting application ✅
 - Browse through different products ✅
 - Filter products based on category, price etc.. ✅
-- Like/review products
-- Add them to cart/wishlist
-- Edit/Delete his/her account
+- Like/review products ✅
+- Add them to cart/wishlist ✅
+- Edit/Delete his/her account ✅
 
 ### Admin can do following tasks on admin dashboard
 

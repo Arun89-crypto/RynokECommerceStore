@@ -12,8 +12,8 @@ app.use(cors())
 // Defining the routes for all the operations for | USER |
 app.use('/api/auth', require('./routes/User/auth'));
 app.use('/api/product', require('./routes/User/product'));
-// app.use('/api/review', require('./routes/review'));
-// app.use('/api/cart', require('./routes/cart'));
+app.use('/api/review', require('./routes/User/review'));
+app.use('/api/cart', require('./routes/User/cart'));
 
 app.listen(port, () => {
     console.log(`Server listening on : http://localhost:${port}`);

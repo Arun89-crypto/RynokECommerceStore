@@ -5,6 +5,7 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fetchUser = require('../../middleware/fetchuser');
+const Cart = require('../../models/Cart');
 
 const JWT_SECRET = "teetarkeaageteetar"
 
@@ -48,6 +49,9 @@ router.post('/register', [
         const authToken = jwt.sign(data, JWT_SECRET);
         // console.log(jwt_data);
 
+        await Cart.create({
+            user: user._id
+        })
 
         return res.json({ authToken });
 
@@ -111,4 +115,58 @@ router.post('/getuser', fetchUser, async (req, res) => {
         console.log(error.message);
     }
 })
+
+
+// ROUTE 4 : change credentials | Auth required
+router.post('/changecredentials', fetchUser, async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        const newCreds = {
+            name, email
+        };
+
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            let secPassword = await bcrypt.hash(password, salt);
+            newCreds.password = secPassword
+        }
+
+        let user = await User.findById(req.user.id);
+        user = await User.findByIdAndUpdate(req.user.id, { $set: newCreds }, { new: true })
+
+        user = await User.findById(req.user.id);
+        res.json(user);
+
+    } catch (error) {
+        res.status(500).send("Internal server error");
+        console.log(error.message);
+    }
+})
+
+// ROUTE 5 : delete the account | Auth required
+router.delete('/deleteaccount', fetchUser, async (req, res) => {
+    try {
+        let user = await User.findById(req.user.id);
+
+        const { email, password } = req.body;
+
+        if (email !== user.email) {
+            return res.status(400).json({ error: "Please try with correct credentials" })
+        }
+
+        const passwordCompare = await bcrypt.compare(password, user.password);
+        if (!passwordCompare) {
+            return res.status(400).json({ error: "Please try with correct credentials" })
+        }
+
+        await User.findByIdAndDelete(user.id);
+        res.json({ success: "User deleted successfully" })
+    } catch (error) {
+        res.status(500).send("Internal server error");
+        console.log(error.message);
+    }
+})
+
+
+
 module.exports = router;
