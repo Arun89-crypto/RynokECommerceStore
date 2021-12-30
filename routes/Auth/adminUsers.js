@@ -8,7 +8,8 @@ const User = require('../../models/User');
 
 router.post('/listusers', fetchUser, async (req, res) => {
     try {
-        if (req.user.admin === false) {
+        const user = await User.findById(req.user.id);
+        if (user.admin === false) {
             return res.status(401).json({ error: 'Sorry you are not allowed to do this' })
         }
         let users = await User.find({ admin: false });
@@ -26,10 +27,11 @@ router.post('/blockUser/:userId', fetchUser, async (req, res) => {
         const newUser = {
             blocked: true
         }
-        if (req.user.admin === false) {
+        let user = await User.findById(req.user.id);
+        if (user.admin === false) {
             return res.status(401).json({ error: 'Sorry you are not allowed to do this' })
         }
-        product = await User.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
+        user = await User.findByIdAndUpdate(req.params.userId, { $set: newUser }, { new: true });
         res.json({ success: "User is blocked" })
     } catch (error) {
         res.status(500).send("Internal server error");
@@ -44,10 +46,11 @@ router.post('/unblockUser/:userId', fetchUser, async (req, res) => {
         const newUser = {
             blocked: false
         }
-        if (req.user.admin === false) {
+        const user = await User.findById(req.user.id);
+        if (user.admin === false) {
             return res.status(401).json({ error: 'Sorry you are not allowed to do this' })
         }
-        product = await User.findByIdAndUpdate(req.params.id, { $set: newUser }, { new: true });
+        await User.findByIdAndUpdate(req.params.userId, { $set: newUser }, { new: true });
         res.json({ success: "User is unblocked successfully" })
     } catch (error) {
         res.status(500).send("Internal server error");

@@ -3,6 +3,7 @@ const router = express.Router();
 const fetchUser = require('../../middleware/fetchuser');
 const { body, validationResult } = require('express-validator');
 const Product = require('../../models/Product');
+const User = require('../../models/User');
 
 
 // ROUTE 1 : GETTING ALL THE PRODUCTS "/api/admin/products/getallproducts"
@@ -11,7 +12,7 @@ router.get('/getallproducts', async (req, res) => {
     try {
         // GETTING ALL THE PRODUCTS IN COLLECTION 'products'
         let products = await Product.find();
-        console.log(products);
+        // console.log(products);
         res.json(products);
     } catch (error) {
         res.status(500).send("Internal server error");
@@ -35,7 +36,7 @@ router.post('/editProduct/:productId', fetchUser, async (req, res) => {
         }
 
         product = await Product.findByIdAndUpdate(req.params.productId, { $set: newProduct })
-
+        product = await Product.findById(req.params.productId);
         res.json(product);
     } catch (error) {
         console.error(error.message);
@@ -77,6 +78,12 @@ router.post('/addproduct', fetchUser, [
         let product = await Product.findOne({ name: req.body.name })
         if (product) {
             return res.status(400).json({ error: 'Sorry product with this name already exists' })
+        }
+
+        let user = await User.findById(req.user.id);
+
+        if (user.admin === false) {
+            return res.status(401).json({ error: 'Sorry you do not have permission' })
         }
 
         product = await Product.create({
