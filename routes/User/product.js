@@ -5,7 +5,7 @@ const User = require('../../models/User');
 const { body, validationResult } = require('express-validator');
 const fetchUser = require('../../middleware/fetchuser');
 
-// ROUTE 1 : FETCHING ALL PRODUCTS | Doesn't require Auth
+// ROUTE 1 : FETCHING ALL PRODUCTS "/api/product/getallproducts" | DOESN'T REQUIRE AUTH
 
 router.get('/getallproducts', async (req, res) => {
     try {
@@ -19,7 +19,7 @@ router.get('/getallproducts', async (req, res) => {
     }
 })
 
-// ROUTE 2 : FETCHING ALL PRODUCTS BY CATAGORY | Doesn't require Auth
+// ROUTE 2 : FETCHING ALL PRODUCTS BY CATAGORY "/api/product/fetchbycategory" | DOESN'T REQUIRE AUTH
 
 router.get('/fetchbycategory', [
     body('category', 'Enter a valid category').isLength({ min: 4 })
@@ -42,11 +42,11 @@ router.get('/fetchbycategory', [
 
 })
 
-// ROUTE 3 : LIKING A PRODUCT | Requires Auth | Requires Product ID & User ID | Requires auth-token in header
+// ROUTE 3 : LIKING A PRODUCT "/api/product/likeproduct/:productId" | REQUIRES AUTH | REQUIRES PRODUCT ID | REQUIRES AUTH-TOKEN IN HEADER
 
-router.put('/likeproduct/:id&:userid', fetchUser, async (req, res) => {
+router.put('/likeproduct/:productId', fetchUser, async (req, res) => {
     try {
-        let product = await Product.findById(req.params.id);
+        let product = await Product.findById(req.params.productId);
 
         if (!product) {
             return res.status(400).send('Product does not exist or id is wrong');
@@ -64,13 +64,13 @@ router.put('/likeproduct/:id&:userid', fetchUser, async (req, res) => {
             image: product.image
         }
 
-        // Adding the liked product to the user db
-        let user = await User.findById(req.params.userid);
+        // ADDING THE LIKED PRODUCT TO THE USER DB
+        let user = await User.findById(req.user.id);
         await user.liked.push(likedProduct);
         user.save();
 
-        // updating the likes in product in db
-        product = await Product.findByIdAndUpdate(req.params.id, { $set: newProduct }, { new: true });
+        // UPDATING THE LIKES IN PRODUCT IN DB
+        product = await Product.findByIdAndUpdate(req.params.productId, { $set: newProduct }, { new: true });
         res.json(product);
 
     } catch (error) {
@@ -79,7 +79,7 @@ router.put('/likeproduct/:id&:userid', fetchUser, async (req, res) => {
     }
 })
 
-// ROUTE 4 : DISLIKING A PRODUCT | Requires Auth | Requires Product ID | Requires auth-token in header
+// ROUTE 4 : DISLIKING A PRODUCT "/api/product/dislikeproduct/:id" | REQUIRES AUTH | REQUIRES PRODUCT ID | REQUIRES AUTH-TOKEN IN HEADER
 
 router.put('/dislikeproduct/:id', fetchUser, async (req, res) => {
     try {
@@ -101,11 +101,11 @@ router.put('/dislikeproduct/:id', fetchUser, async (req, res) => {
     }
 })
 
-// ROUTE 5 : ADDING PRODUCT TO WISHLIST | Requires Auth | Requires Product ID & User ID | Requires auth-token in header
+// ROUTE 5 : ADDING PRODUCT TO WISHLIST "/api/product/addtowishlist/:productId" | REQUIRES AUTH | REQUIRES PRODUCT ID | REQUIRES AUTH-TOKEN IN HEADER
 
-router.put('/addtowishlist/:id&:userid', fetchUser, async (req, res) => {
+router.put('/addtowishlist/:productId', fetchUser, async (req, res) => {
     try {
-        let product = await Product.findById(req.params.id);
+        let product = await Product.findById(req.params.productId);
 
         if (!product) {
             return res.status(400).send('Product does not exist or id is wrong');
@@ -119,8 +119,8 @@ router.put('/addtowishlist/:id&:userid', fetchUser, async (req, res) => {
             image: product.image
         }
 
-        // Adding the liked product to the user db
-        let user = await User.findById(req.params.userid);
+        // ADDING THE LIKED PRODUCT TO THE USER DB
+        let user = await User.findById(req.user.id);
         await user.wishlist.push(wishlistProduct);
         user.save();
 
@@ -132,41 +132,5 @@ router.put('/addtowishlist/:id&:userid', fetchUser, async (req, res) => {
     }
 })
 
-// Temp route to add products | Remove after creating the Admin
-
-router.post('/addproduct', [
-    body('name', 'Name length must be greater than 2').isLength({ min: 2 }),
-    body('description', 'Description length must be greater than 2').isLength({ min: 10 }),
-], async (req, res) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-
-        let product = await Product.findOne({ name: req.body.name })
-        if (product) {
-            return res.status(400).json({ error: 'Sorry product with this name already exists' })
-        }
-
-        product = await Product.create({
-            name: req.body.name,
-            description: req.body.description,
-            rating: req.body.rating,
-            price: req.body.price,
-            category: req.body.category,
-            image: req.body.image,
-            quantity: req.body.quantity
-        })
-
-        res.json(product);
-
-    } catch (error) {
-        res.status(500).send("Internal server error");
-        console.log(error.message);
-    }
-})
 
 module.exports = router

@@ -4,9 +4,9 @@ const { body, validationResult } = require('express-validator');
 const fetchUser = require('../../middleware/fetchuser');
 const Cart = require('../../models/Cart');
 
-// ALL ROUTES REQUIRE AUTH
+// ALL ROUTES REQUIRE AUTH & AUTH-TOKEN IN HEADER
 
-// ROUTE 1 : GETTING CART ITEMS
+// ROUTE 1 : GETTING CART ITEMS "/api/cart/getcart"
 router.get('/getcart', fetchUser, async (req, res) => {
     try {
         const cart = await Cart.find({ user: req.user.id })
@@ -20,7 +20,7 @@ router.get('/getcart', fetchUser, async (req, res) => {
     }
 })
 
-// ROUTE 2 : ADDING CART ITEMS
+// ROUTE 2 : ADDING CART ITEMS "/api/cart/additemtocart"
 router.post('/additemtocart', fetchUser, async (req, res) => {
     try {
         const cart = await Cart.find({ user: req.user.id })
@@ -44,7 +44,7 @@ router.post('/additemtocart', fetchUser, async (req, res) => {
     }
 })
 
-// ROUTE 3 : DELETING ITEMS IN CART
+// ROUTE 3 : DELETING ITEMS IN CART "/api/cart/deletecartitems/:itemId"
 router.delete('/deletecartitems/:itemId', fetchUser, async (req, res) => {
     try {
         const cart = await Cart.find({ user: req.user.id })
@@ -62,7 +62,7 @@ router.delete('/deletecartitems/:itemId', fetchUser, async (req, res) => {
     }
 })
 
-// ROUTE 4 : INCREASING ITEM QUANTITY
+// ROUTE 4 : INCREASING ITEM QUANTITY "/api/cart/increasequantity/:itemId"
 router.put('/increasequantity/:itemId', fetchUser, async (req, res) => {
     try {
         let cart = await Cart.find({ user: req.user.id })
@@ -80,7 +80,7 @@ router.put('/increasequantity/:itemId', fetchUser, async (req, res) => {
     }
 })
 
-// ROUTE 5 : DECREASING THE QUANTITY
+// ROUTE 5 : DECREASING THE QUANTITY "/api/cart/decreasequantity/:itemId"
 router.put('/decreasequantity/:itemId', fetchUser, async (req, res) => {
     try {
         let cart = await Cart.find({ user: req.user.id })

@@ -64,6 +64,10 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    admin: {
+        type: Boolean,
+        default: false
+    },
     wishlist: [Wishlist],
     liked: [LikedProducts]
 })
