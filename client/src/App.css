@@ -2,3 +2,46 @@
   margin: 0;
   padding: 0;
 }
+.display__flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex__flow__down {
+  flex-direction: column;
+}
+.display__flex__start {
+  align-items: flex-start;
+}
+.display__flex__end {
+  align-items: flex-end;
+}
+.flex__space__between {
+  justify-content: space-between;
+}
+.flex__space__around {
+  justify-content: space-around;
+}
+.button__primary {
+  padding: 10px;
+  border: 1px solid #03045e;
+  background: none;
+  min-width: 80px;
+  color: #03045e;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+.button__primary svg {
+  margin: 5px;
+  margin-left: 15px;
+}
+.button__primary:hover {
+  background: #03045e;
+  color: #fff;
+}
+.button__primary:hover svg {
+  fill: #fff;
+}

@@ -1,0 +1,72 @@
+.landing__page__master {
+  background: url("../../Assets/svgs/waves.svg");
+  background-position: center;
+  background-size: cover;
+  min-height: 100vh;
+  height: auto;
+}
+.header__block__left,
+.header__block__right {
+  width: 45%;
+  padding: 2.5%;
+}
+.header__image {
+  width: 100%;
+  animation: upAndDown 2s infinite;
+}
+.header__block__right h1 {
+  font-size: 50px;
+  line-height: 94%;
+}
+.header__block__right h1:nth-child(2) {
+  margin-bottom: 5%;
+}
+.header__block__right button {
+  margin-top: 4%;
+}
+@keyframes upAndDown {
+  0% {
+    transform: translateY(10px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(10px);
+  }
+}
+
+/*TABLET ENDPOINT*/
+@media screen and (max-width: 768px) {
+  .header__block {
+    flex-direction: column-reverse;
+  }
+  .header__block__left,
+  .header__block__right {
+    width: 90%;
+    padding: 5%;
+  }
+  .header__image {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .header__block__left,
+  .header__block__right {
+    text-align: center;
+  }
+  .header__image {
+    width: 100%;
+  }
+  .header__block__right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .header__block__right button {
+    width: 100%;
+    margin-top: 10%;
+  }
+}
